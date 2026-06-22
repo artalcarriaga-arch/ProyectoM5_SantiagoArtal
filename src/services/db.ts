@@ -1,4 +1,4 @@
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, addDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import { Product } from '../types';
 
@@ -8,15 +8,23 @@ const productsCollection = collection(db, 'products');
 export const getProducts = async (): Promise<Product[]> => {
   try {
     const snapshot = await getDocs(productsCollection);
-    // Mapeamos los documentos de Firebase al formato de nuestro tipo Product
-    const productsList = snapshot.docs.map(doc => ({
+    return snapshot.docs.map(doc => ({
       id: doc.id,
       ...doc.data()
     })) as Product[];
-    
-    return productsList;
   } catch (error) {
     console.error("Error obteniendo productos de Firestore:", error);
-    return []; // En caso de error, devolvemos un array vacío para no romper la UI
+    return [];
+  }
+};
+
+//  Coleman la función para crear un producto nuevo 🚀
+export const addProduct = async (product: Omit<Product, 'id'>): Promise<boolean> => {
+  try {
+    await addDoc(productsCollection, product);
+    return true;
+  } catch (error) {
+    console.error("Error al crear el producto en Firestore:", error);
+    return false;
   }
 };
