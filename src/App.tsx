@@ -4,10 +4,12 @@ import Home from './pages/customer/Home';
 import Login from './pages/auth/Login';
 import Dashboard from './pages/admin/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute';
+import Navbar from './components/Navbar';
 
 function App() {
   return (
     <Router>
+      <Navbar/>
       <Routes>
         {/* Rutas Públicas */}
         <Route path="/login" element={<Login />} />
