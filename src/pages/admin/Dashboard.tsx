@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { addProduct } from '../../services/db';
+import { addProduct } from '../../services/products.service';
 
 export default function Dashboard() {
   const [name, setName] = useState('');
