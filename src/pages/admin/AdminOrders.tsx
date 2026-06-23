@@ -76,27 +76,29 @@ export default function AdminOrders() {
 
   if (loading) {
     return (
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        <div className="space-y-4">
-          {[...Array(3)].map((_, i) => (
-            <div key={i} className="bg-white p-4 rounded-2xl border border-gray-100 space-y-3 animate-pulse">
-              <div className="h-4 bg-gray-200 rounded w-1/4" />
-              <div className="h-4 bg-gray-200 rounded w-1/3" />
-            </div>
-          ))}
+      <div className="p-6 bg-white dark:bg-gray-900 min-h-screen transition-colors duration-200">
+        <div className="max-w-6xl mx-auto px-4 py-8">
+          <div className="space-y-4">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="bg-white dark:bg-gray-800 p-4 rounded-2xl border border-gray-100 dark:border-gray-700 space-y-3 animate-pulse">
+                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/4" />
+                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/3" />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
+    <div className="p-6 bg-white dark:bg-gray-900 min-h-screen transition-colors duration-200">
       <div className="max-w-6xl mx-auto space-y-6">
         
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-2xl font-black text-gray-900">📦 Gestión de Órdenes</h1>
-            <p className="text-sm text-gray-500 mt-1">Administrá los pedidos de los clientes.</p>
+            <h1 className="text-2xl font-black text-gray-900 dark:text-white">📦 Órdenes de Clientes</h1>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Administrá los pedidos de los clientes.</p>
           </div>
           <div className="flex gap-2">
             {['all', 'pending', 'processing', 'completed', 'cancelled'].map((status) => (
@@ -106,7 +108,7 @@ export default function AdminOrders() {
                 className={`px-4 py-2 text-xs font-bold rounded-lg transition-all ${
                   filterStatus === status
                     ? 'bg-indigo-600 text-white'
-                    : 'bg-white text-gray-600 border border-gray-200 hover:border-indigo-200'
+                    : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:border-indigo-200 dark:hover:border-indigo-500'
                 }`}
               >
                 {status === 'all' ? 'Todas' : getStatusLabel(status)}
@@ -116,34 +118,34 @@ export default function AdminOrders() {
         </div>
 
         {filteredOrders.length === 0 ? (
-          <div className="text-center py-16 bg-white rounded-2xl border border-gray-100">
+          <div className="text-center py-16 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700">
             <span className="text-4xl">📭</span>
-            <h3 className="mt-4 text-sm font-bold text-gray-900">No hay órdenes</h3>
-            <p className="mt-1 text-xs text-gray-500">No hay órdenes con este estado.</p>
+            <h3 className="mt-4 text-sm font-bold text-gray-900 dark:text-white">No hay órdenes</h3>
+            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">No hay órdenes con este estado.</p>
           </div>
         ) : (
           <div className="space-y-4">
             {filteredOrders.map((order) => (
-              <div key={order.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+              <div key={order.id} className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
                 <div className="p-6">
-                  <div className="flex items-center justify-between mb-4 pb-4 border-b border-gray-100">
+                  <div className="flex items-center justify-between mb-4 pb-4 border-b border-gray-100 dark:border-gray-700">
                     <div>
-                      <p className="text-xs text-gray-500 font-medium uppercase tracking-wider">Orden</p>
-                      <p className="font-mono text-sm font-bold text-gray-900">{order.id}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wider">Orden</p>
+                      <p className="font-mono text-sm font-bold text-gray-900 dark:text-white">{order.id}</p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-500 font-medium uppercase tracking-wider">Cliente</p>
-                      <p className="text-sm font-bold text-gray-900">{order.customerEmail}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wider">Cliente</p>
+                      <p className="text-sm font-bold text-gray-900 dark:text-white">{order.customerEmail}</p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-500 font-medium uppercase tracking-wider">Fecha</p>
-                      <p className="text-sm font-bold text-gray-900">
+                      <p className="text-xs text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wider">Fecha</p>
+                      <p className="text-sm font-bold text-gray-900 dark:text-white">
                         {order.createdAt?.toDate?.()?.toLocaleDateString('es-AR') || 'N/A'}
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-500 font-medium uppercase tracking-wider">Total</p>
-                      <p className="text-lg font-black text-indigo-600">
+                      <p className="text-xs text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wider">Total</p>
+                      <p className="text-lg font-black text-indigo-600 dark:text-indigo-400">
                         ${order.total.toLocaleString('es-AR')}
                       </p>
                     </div>
@@ -151,15 +153,15 @@ export default function AdminOrders() {
 
                   <div className="mb-4 space-y-2">
                     {order.items.map((item, idx) => (
-                      <div key={idx} className="flex items-center justify-between text-xs bg-gray-50 p-2 rounded">
-                        <span className="font-medium">{item.name}</span>
-                        <span className="text-gray-500">x{item.quantity}</span>
-                        <span className="font-bold">${(item.price * item.quantity).toLocaleString('es-AR')}</span>
+                      <div key={idx} className="flex items-center justify-between text-xs bg-gray-50 dark:bg-gray-700 p-2 rounded">
+                        <span className="font-medium text-gray-900 dark:text-white">{item.name}</span>
+                        <span className="text-gray-500 dark:text-gray-400">x{item.quantity}</span>
+                        <span className="font-bold text-gray-900 dark:text-white">${(item.price * item.quantity).toLocaleString('es-AR')}</span>
                       </div>
                     ))}
                   </div>
 
-                  <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                  <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-700">
                     <div className={`px-3 py-1.5 rounded-lg border text-xs font-bold ${getStatusColor(order.status)}`}>
                       {getStatusLabel(order.status)}
                     </div>
@@ -169,7 +171,7 @@ export default function AdminOrders() {
                           <button
                             key={status}
                             onClick={() => updateOrderStatus(order.id!, status as any)}
-                            className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold rounded-lg transition-colors"
+                            className="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 text-xs font-bold rounded-lg transition-colors"
                           >
                             → {getStatusLabel(status)}
                           </button>

@@ -42,14 +42,14 @@ export default function Checkout() {
 
   if (orderId) {
     return (
-      <div className="max-w-md mx-auto my-12 p-8 bg-white rounded-2xl border border-gray-100 shadow-sm text-center space-y-4">
+      <div className="max-w-md mx-auto my-12 p-8 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm text-center space-y-4">
         <span className="text-5xl">🎉</span>
-        <h2 className="text-2xl font-black text-gray-900">¡Compra Confirmada!</h2>
-        <p className="text-sm text-gray-500">
+        <h2 className="text-2xl font-black text-gray-900 dark:text-white">¡Compra Confirmada!</h2>
+        <p className="text-sm text-gray-500 dark:text-gray-400">
           Tu orden fue procesada con éxito de manera simulada.
         </p>
-        <div className="bg-gray-50 p-3 rounded-xl border border-gray-100 text-xs font-mono text-gray-600">
-          ID de Orden: <span className="font-bold text-indigo-600">{orderId}</span>
+        <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded-xl border border-gray-100 dark:border-gray-600 text-xs font-mono text-gray-600 dark:text-gray-300">
+          ID de Orden: <span className="font-bold text-indigo-600 dark:text-indigo-400">{orderId}</span>
         </div>
         <button
           onClick={() => navigate('/')}
@@ -62,12 +62,12 @@ export default function Checkout() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-black text-gray-900 mb-6">Resumen de tu Compra</h1>
+    <div className="max-w-3xl mx-auto px-4 py-8 bg-white dark:bg-gray-900 min-h-screen transition-colors duration-200">
+      <h1 className="text-2xl font-black text-gray-900 dark:text-white mb-6">Resumen de tu Compra</h1>
 
       {items.length === 0 ? (
-        <div className="text-center py-12 bg-white rounded-2xl border border-gray-100">
-          <p className="text-gray-500 text-sm">Tu carrito está vacío.</p>
+        <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700">
+          <p className="text-gray-500 dark:text-gray-400 text-sm">Tu carrito está vacío.</p>
           <button onClick={() => navigate('/')} className="mt-4 text-sm font-bold text-indigo-600 underline">
             Ir a buscar productos
           </button>
@@ -77,27 +77,27 @@ export default function Checkout() {
           {/* Lista de productos */}
           <div className="md:col-span-2 space-y-3">
             {items.map((item) => (
-              <div key={item.product.id} className="flex items-center gap-4 bg-white p-3 rounded-xl border border-gray-100 shadow-sm">
+              <div key={item.product.id} className="flex items-center gap-4 bg-white dark:bg-gray-800 p-3 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm">
                 <img 
                   src={item.product.imageUrl} 
                   alt={item.product.name} 
-                  className="w-16 h-16 object-cover rounded-lg bg-gray-50" 
+                  className="w-16 h-16 object-cover rounded-lg bg-gray-50 dark:bg-gray-700" 
                 />
                 <div className="flex-1 min-w-0">
-                  <h4 className="text-sm font-bold text-gray-900 truncate">{item.product.name}</h4>
-                  <p className="text-xs text-gray-500">Cant: {item.quantity} x ${item.product.price}</p>
+                  <h4 className="text-sm font-bold text-gray-900 dark:text-white truncate">{item.product.name}</h4>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Cant: {item.quantity} x ${item.product.price}</p>
                 </div>
-                <span className="text-sm font-black text-gray-900">
+                <span className="text-sm font-black text-gray-900 dark:text-white">
                   ${(item.product.price * item.quantity).toLocaleString('es-AR')}
                 </span>
               </div>
             ))}
           </div>
 
-          <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm h-fit space-y-4">
-            <h3 className="text-sm font-black text-gray-900 uppercase tracking-wider">Total de la Orden</h3>
-            <div className="flex justify-between items-center pt-2 border-t border-gray-100">
-              <span className="text-sm text-gray-500 font-medium">Subtotal</span>
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm h-fit space-y-4">
+            <h3 className="text-sm font-black text-gray-900 dark:text-white uppercase tracking-wider">Total de la Orden</h3>
+            <div className="flex justify-between items-center pt-2 border-t border-gray-100 dark:border-gray-700">
+              <span className="text-sm text-gray-500 dark:text-gray-400 font-medium">Subtotal</span>
               <span className="text-base font-black text-gray-900">${total.toLocaleString('es-AR')}</span>
             </div>
             

@@ -97,20 +97,20 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
+    <div className="p-6 bg-white dark:bg-gray-900 min-h-screen transition-colors duration-200">
       <div className="max-w-6xl mx-auto space-y-6">
         
         {/* Formulario */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-          <div className="border-b border-gray-100 pb-4 mb-6 flex justify-between items-center">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-8">
+          <div className="border-b border-gray-100 dark:border-gray-700 pb-4 mb-6 flex justify-between items-center">
             <div>
-              <h1 className="text-2xl font-black text-gray-900">📊 Panel de Administración</h1>
-              <p className="text-sm text-gray-500 mt-1">{editingId ? 'Editá el producto' : 'Cargá nuevos productos'} al catálogo en tiempo real.</p>
+              <h1 className="text-2xl font-black text-gray-900 dark:text-white">📊 Panel de Administración</h1>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{editingId ? 'Editá el producto' : 'Cargá nuevos productos'} al catálogo en tiempo real.</p>
             </div>
             {editingId && (
               <button
                 onClick={resetForm}
-                className="px-4 py-2 text-sm font-bold text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                className="px-4 py-2 text-sm font-bold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
               >
                 ✕ Cancelar
               </button>
@@ -119,7 +119,7 @@ export default function Dashboard() {
 
           {message.text && (
             <div className={`p-4 rounded-xl text-sm font-medium mb-6 text-center border ${
-              message.isError ? 'bg-red-50 border-red-200 text-red-600' : 'bg-emerald-50 border-emerald-200 text-emerald-700'
+              message.isError ? 'bg-red-50 dark:bg-red-900/30 border-red-200 dark:border-red-800 text-red-600 dark:text-red-400' : 'bg-emerald-50 dark:bg-emerald-900/30 border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400'
             }`}>
               {message.text}
             </div>
@@ -128,23 +128,23 @@ export default function Dashboard() {
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">Nombre del Producto</label>
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1">Nombre del Producto</label>
                 <input
                   type="text"
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
                   placeholder="Ej: Campera de Abrigo Pro"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">Categoría</label>
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1">Categoría</label>
                 <select
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm bg-white"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm bg-white dark:bg-gray-700 dark:text-white"
                 >
                   {ADMIN_CATEGORIES.map((cat) => (
                     <option key={cat} value={cat}>{cat}</option>
@@ -154,52 +154,52 @@ export default function Dashboard() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">Descripción</label>
+              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1">Descripción</label>
               <textarea
                 required
                 rows={3}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
                 placeholder="Detalles del material, talles, etc..."
               />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">Precio ($)</label>
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1">Precio ($)</label>
                 <input
                   type="number"
                   required
                   min="0"
                   value={price}
                   onChange={(e) => setPrice(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
                   placeholder="Ej: 45000"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">Stock Inicial</label>
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1">Stock Inicial</label>
                 <input
                   type="number"
                   required
                   min="0"
                   value={stock}
                   onChange={(e) => setStock(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
                   placeholder="Ej: 10"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">URL de la Imagen</label>
+              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1">URL de la Imagen</label>
               <input
                 type="url"
                 value={imageUrl}
                 onChange={(e) => setImageUrl(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
                 placeholder="https://images.unsplash.com/... o enlace de internet"
               />
             </div>
@@ -219,38 +219,38 @@ export default function Dashboard() {
         </div>
 
         {/* Lista de Productos */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-          <h2 className="text-xl font-black text-gray-900 mb-6">📋 Productos en el Catálogo</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-8">
+          <h2 className="text-xl font-black text-gray-900 dark:text-white mb-6">📋 Productos en el Catálogo</h2>
           {products.length === 0 ? (
-            <p className="text-center text-gray-500 py-8">No hay productos aún. Crea uno arriba.</p>
+            <p className="text-center text-gray-500 dark:text-gray-400 py-8">No hay productos aún. Crea uno arriba.</p>
           ) : (
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {products.map((product) => (
-                <div key={product.id} className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md transition-shadow">
+                <div key={product.id} className="bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl p-4 hover:shadow-md dark:hover:shadow-lg dark:hover:shadow-gray-900/50 transition-shadow">
                   <img 
                     src={product.imageUrl} 
                     alt={product.name}
-                    className="w-full h-40 object-cover rounded-lg mb-3 bg-gray-100"
+                    className="w-full h-40 object-cover rounded-lg mb-3 bg-gray-100 dark:bg-gray-600"
                   />
-                  <h3 className="font-bold text-gray-900 line-clamp-1">{product.name}</h3>
-                  <p className="text-xs text-gray-500 mt-1">{product.category}</p>
-                  <p className="text-sm text-gray-600 mt-2 line-clamp-2">{product.description}</p>
-                  <div className="mt-3 flex justify-between items-center pt-3 border-t border-gray-100">
+                  <h3 className="font-bold text-gray-900 dark:text-white line-clamp-1">{product.name}</h3>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{product.category}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300 mt-2 line-clamp-2">{product.description}</p>
+                  <div className="mt-3 flex justify-between items-center pt-3 border-t border-gray-100 dark:border-gray-600">
                     <div>
-                      <span className="text-sm font-bold text-gray-900">${product.price.toLocaleString('es-AR')}</span>
-                      <p className="text-xs text-gray-500">Stock: {product.stock}</p>
+                      <span className="text-sm font-bold text-gray-900 dark:text-white">${product.price.toLocaleString('es-AR')}</span>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">Stock: {product.stock}</p>
                     </div>
                   </div>
                   <div className="mt-3 flex gap-2">
                     <button
                       onClick={() => handleEdit(product)}
-                      className="flex-1 px-3 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold rounded-lg transition-colors"
+                      className="flex-1 px-3 py-2 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 text-blue-700 dark:text-blue-400 text-xs font-bold rounded-lg transition-colors"
                     >
                       ✏️ Editar
                     </button>
                     <button
                       onClick={() => handleDelete(product.id)}
-                      className="flex-1 px-3 py-2 bg-red-50 hover:bg-red-100 text-red-700 text-xs font-bold rounded-lg transition-colors"
+                      className="flex-1 px-3 py-2 bg-red-50 dark:bg-red-900/30 hover:bg-red-100 dark:hover:bg-red-900/50 text-red-700 dark:text-red-400 text-xs font-bold rounded-lg transition-colors"
                     >
                       🗑️ Eliminar
                     </button>

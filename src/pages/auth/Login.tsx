@@ -51,23 +51,23 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-[85vh] flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-gray-50">
-      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+    <div className="min-h-[85vh] flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-900 transition-colors duration-200">
+      <div className="max-w-md w-full space-y-8 bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
         
         {/* Encabezado */}
         <div className="text-center">
           <span className="text-4xl">🛍️</span>
-          <h2 className="mt-4 text-3xl font-black text-gray-900">
+          <h2 className="mt-4 text-3xl font-black text-gray-900 dark:text-white">
             {isRegister ? 'Creá tu cuenta' : 'Ingresá a tu cuenta'}
           </h2>
-          <p className="mt-2 text-sm text-gray-500">
+          <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
             {isRegister ? 'Disfrutá de la mejor experiencia e-commerce' : '¡Qué bueno verte de nuevo!'}
           </p>
         </div>
 
         {/* Alerta de Error */}
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-600 text-sm p-3 rounded-xl font-medium text-center">
+          <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 text-sm p-3 rounded-xl font-medium text-center">
             ⚠️ {error}
           </div>
         )}
@@ -76,7 +76,7 @@ export default function Login() {
         <form className="mt-8 space-y-4" onSubmit={handleSubmit}>
           <div className="space-y-3">
             <div>
-              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Email</label>
+              <label className="block text-xs font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wider mb-1">Email</label>
               <input
                 type="email"
                 required

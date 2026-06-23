@@ -7,6 +7,7 @@ import Dashboard from './pages/admin/Dashboard';
 import AdminOrders from './pages/admin/AdminOrders';
 import ProtectedRoute from './components/ProtectedRoute';
 import Navbar from './components/Navbar';
+import ToastContainer from './components/ToastContainer';
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      <ToastContainer />
     </Router>
   );
 }
