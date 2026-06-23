@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { getProductsFromDB, Product } from '../../services/products.service.ts';
 import { useDebounce } from '../../hooks/useDebounce.ts';
-import { useCart } from '../../context/CartContext.tsx';
+import { useCart } from '../../hooks/useCart';
 
 const CATEGORIES = ['Todos', 'Remeras', 'Pantalones', 'Zapatillas', 'Accesorios'];
 

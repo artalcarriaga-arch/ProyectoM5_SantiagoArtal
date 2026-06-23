@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useReducer } from 'react';
+import React, { createContext, useReducer } from 'react';
 import { CartItem, Product } from '../types';
 
 // 1. Definimos el estado del carrito
@@ -78,7 +78,7 @@ interface CartContextType extends CartState {
   clearCart: () => void;
 }
 
-const CartContext = createContext<CartContextType | undefined>(undefined);
+export const CartContext = createContext<CartContextType | undefined>(undefined);
 
 // 5. Componente Proveedor (Provider)
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -95,11 +95,4 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       {children}
     </CartContext.Provider>
   );
-};
-
-// 6. Custom Hook para consumir el carrito de forma limpia
-export const useCart = () => {
-  const context = useContext(CartContext);
-  if (!context) throw new Error('useCart debe ser utilizado dentro de un CartProvider');
-  return context;
 };
