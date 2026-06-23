@@ -54,7 +54,6 @@ export default function Login() {
     <div className="min-h-[85vh] flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-900 transition-colors duration-200">
       <div className="max-w-md w-full space-y-8 bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
         
-        {/* Encabezado */}
         <div className="text-center">
           <span className="text-4xl">🛍️</span>
           <h2 className="mt-4 text-3xl font-black text-gray-900 dark:text-white">
@@ -65,14 +64,12 @@ export default function Login() {
           </p>
         </div>
 
-        {/* Alerta de Error */}
         {error && (
           <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 text-sm p-3 rounded-xl font-medium text-center">
             ⚠️ {error}
           </div>
         )}
 
-        {/* Formulario */}
         <form className="mt-8 space-y-4" onSubmit={handleSubmit}>
           <div className="space-y-3">
             <div>
@@ -113,7 +110,6 @@ export default function Login() {
           <div className="relative flex justify-center text-xs uppercase"><span className="bg-white px-2 text-gray-400 font-semibold">O continuá con</span></div>
         </div>
 
-        {/* Botón de Google */}
         <button
           onClick={handleGoogleLogin}
           type="button"

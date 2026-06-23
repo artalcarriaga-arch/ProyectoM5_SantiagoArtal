@@ -89,7 +89,6 @@ export default function Orders() {
           {orders.map((order) => (
             <div key={order.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow">
               <div className="p-6">
-                {/* Encabezado de la orden */}
                 <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-100">
                   <div>
                     <p className="text-xs text-gray-500 font-medium uppercase tracking-wider">Orden</p>
@@ -106,7 +105,7 @@ export default function Orders() {
                   </div>
                 </div>
 
-                {/* Ítems de la orden */}
+
                 <div className="mb-6">
                   <div className="space-y-3">
                     {order.items.map((item, idx) => (
@@ -137,7 +136,6 @@ export default function Orders() {
                   </div>
                 </div>
 
-                {/* Total */}
                 <div className="pt-4 border-t border-gray-100 flex justify-end">
                   <div className="text-right">
                     <p className="text-xs text-gray-500 font-medium mb-1">Total</p>

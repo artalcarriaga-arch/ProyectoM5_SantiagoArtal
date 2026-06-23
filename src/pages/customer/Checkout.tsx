@@ -30,7 +30,13 @@ export default function Checkout() {
         imageUrl: item.product.imageUrl,
       }));
 
-      const newId = await createOrderInDB(user.uid, user.email || 'anonimo@shop.com', orderItems, total);
+      const newId = await createOrderInDB(
+        user.uid,
+        user.email || 'anonimo@shop.com',
+        user.displayName || user.email?.split('@')[0] || 'Cliente',
+        orderItems,
+        total
+      );
       setOrderId(newId);
       clearCart();
     } catch (error) {
@@ -74,7 +80,6 @@ export default function Checkout() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Lista de productos */}
           <div className="md:col-span-2 space-y-3">
             {items.map((item) => (
               <div key={item.product.id} className="flex items-center gap-4 bg-white dark:bg-gray-800 p-3 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm">

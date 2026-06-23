@@ -43,7 +43,6 @@ export default function Dashboard() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Validar archivo
     if (!isValidImageFile(file)) {
       setMessage({ 
         text: '❌ Archivo inválido. Máximo 5MB (JPEG, PNG, WebP o GIF)', 
@@ -56,24 +55,20 @@ export default function Dashboard() {
       setUploading(true);
       setMessage({ text: '', isError: false });
 
-      // Mostrar preview local
       const reader = new FileReader();
       reader.onload = (e) => {
         setImagePreview(e.target?.result as string);
       };
       reader.readAsDataURL(file);
 
-      // Obtener URL presignada
       const fileName = generateUniqueFileName(file.name);
       const { uploadUrl, imageUrl: s3ImageUrl } = await getPresignedUploadUrl(
         fileName,
         file.type
       );
 
-      // Subir archivo directamente a S3
       await uploadFileToS3(uploadUrl, file);
 
-      // Guardar URL en el estado
       setImageUrl(s3ImageUrl);
       setMessage({ 
         text: '✅ Imagen subida a S3 exitosamente', 
@@ -120,7 +115,6 @@ export default function Dashboard() {
     setLoading(true);
     setMessage({ text: '', isError: false });
 
-    // Validar que hay imagen
     if (!imageUrl) {
       setMessage({ text: '❌ Debes cargar una imagen', isError: true });
       setLoading(false);
@@ -260,7 +254,6 @@ export default function Dashboard() {
             <div>
               <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1">📸 Imagen del Producto</label>
               <div className="flex gap-4">
-                {/* Preview */}
                 <div className="w-24 h-24 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 flex items-center justify-center bg-gray-50 dark:bg-gray-700 overflow-hidden">
                   {imagePreview ? (
                     <img 
@@ -273,7 +266,6 @@ export default function Dashboard() {
                   )}
                 </div>
 
-                {/* File Input */}
                 <div className="flex-1">
                   <div className="relative">
                     <input
@@ -311,7 +303,6 @@ export default function Dashboard() {
           </form>
         </div>
 
-        {/* Lista de Productos */}
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-8">
           <h2 className="text-xl font-black text-gray-900 dark:text-white mb-6">📋 Productos en el Catálogo</h2>
           {products.length === 0 ? (

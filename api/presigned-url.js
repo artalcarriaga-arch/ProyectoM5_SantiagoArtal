@@ -17,7 +17,6 @@ module.exports = async function handler(req, res) {
   try {
     const { fileName, contentType } = req.body;
 
-    // Validaciones
     if (!fileName || !contentType) {
       return res.status(400).json({ error: 'fileName y contentType son requeridos' });
     }

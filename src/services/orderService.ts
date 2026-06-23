@@ -1,5 +1,6 @@
-import { collection, addDoc, serverTimestamp, query, where, getDocs, orderBy } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, query, where, getDocs, orderBy, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
+import { sendOrderCreatedEmail, sendOrderStatusEmail } from './emailService';
 
 interface OrderItem {
   id: string;
@@ -21,7 +22,8 @@ export interface Order {
 
 export const createOrderInDB = async (
   userId: string, 
-  customerEmail: string, 
+  customerEmail: string,
+  customerName: string,
   items: OrderItem[], 
   total: number
 ): Promise<string> => {
@@ -37,7 +39,25 @@ export const createOrderInDB = async (
   };
 
   const docRef = await addDoc(ordersRef, newOrder);
-  return docRef.id;
+  const orderId = docRef.id;
+
+  try {
+    await sendOrderCreatedEmail(
+      customerEmail,
+      customerName,
+      orderId,
+      total,
+      items.map(item => ({
+        name: item.name,
+        quantity: item.quantity,
+        price: item.price,
+      }))
+    );
+  } catch (error) {
+    console.error('Error al enviar email de confirmación:', error);
+  }
+
+  return orderId;
 };
 
 export const getUserOrders = async (userId: string): Promise<Order[]> => {
@@ -49,4 +69,28 @@ export const getUserOrders = async (userId: string): Promise<Order[]> => {
     id: doc.id,
     ...doc.data()
   })) as Order[];
+};
+
+export const updateOrderStatus = async (
+  orderId: string,
+  newStatus: 'pending' | 'processing' | 'completed' | 'cancelled'
+): Promise<void> => {
+  const orderRef = doc(db, 'orders', orderId);
+  await updateDoc(orderRef, { status: newStatus });
+};
+
+export const updateOrderStatusWithEmail = async (
+  orderId: string,
+  newStatus: 'pending' | 'processing' | 'completed' | 'cancelled',
+  customerEmail: string,
+  customerName: string
+): Promise<void> => {
+  const orderRef = doc(db, 'orders', orderId);
+  await updateDoc(orderRef, { status: newStatus });
+
+  try {
+    await sendOrderStatusEmail(customerEmail, customerName, orderId, newStatus);
+  } catch (error) {
+    console.error('Error al enviar email de actualización de estado:', error);
+  }
 };

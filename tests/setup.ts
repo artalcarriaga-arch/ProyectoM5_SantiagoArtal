@@ -1,7 +1,6 @@
 import '@testing-library/jest-dom';
 import { vi } from 'vitest';
 
-// Mock de Firebase
 vi.mock('firebase/app', () => ({
   initializeApp: vi.fn(),
   getApp: vi.fn(),

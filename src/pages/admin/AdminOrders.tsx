@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../config/firebase';
-import { updateDoc, doc } from 'firebase/firestore';
-import { Order } from '../../services/orderService';
+import { Order, updateOrderStatusWithEmail } from '../../services/orderService';
 
 export default function AdminOrders() {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -32,8 +31,17 @@ export default function AdminOrders() {
 
   const updateOrderStatus = async (orderId: string, newStatus: 'pending' | 'processing' | 'completed' | 'cancelled') => {
     try {
-      const orderRef = doc(db, 'orders', orderId);
-      await updateDoc(orderRef, { status: newStatus });
+      const order = orders.find(o => o.id === orderId);
+      if (!order) return;
+
+      const customerName = order.customerEmail?.split('@')[0] || 'Cliente';
+
+      await updateOrderStatusWithEmail(
+        orderId,
+        newStatus,
+        order.customerEmail,
+        customerName
+      );
       await loadOrders();
     } catch (error) {
       console.error('Error al actualizar orden:', error);

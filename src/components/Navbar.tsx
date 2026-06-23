@@ -24,7 +24,6 @@ export default function Navbar() {
     <nav className="bg-white dark:bg-gray-900 shadow-sm border-b border-gray-100 dark:border-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
-          {/* Logo / Nombre de la tienda */}
           <div className="flex items-center">
             <Link to="/" className="text-xl font-bold text-indigo-600 flex items-center gap-2">
               <span>🛍️</span>
@@ -34,9 +33,7 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* Bloque de usuario y acciones */}
           <div className="flex items-center gap-4">
-            {/* Toggle Tema */}
             <button
               onClick={toggleTheme}
               className="text-xl p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
@@ -47,7 +44,6 @@ export default function Navbar() {
 
             {user ? (
               <>
-                {/* Info del usuario logueado */}
                 <div className="flex flex-col items-end text-xs">
                   <span className="text-gray-500 dark:text-gray-400 font-medium">{user.email}</span>
                   {profile?.role === 'admin' && (
