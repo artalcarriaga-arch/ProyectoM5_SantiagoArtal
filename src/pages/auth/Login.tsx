@@ -6,7 +6,6 @@ export default function Login() {
   const { loginWithEmail, registerWithEmail, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
 
-  // Estados del formulario
   const [isRegister, setIsRegister] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -24,10 +23,9 @@ export default function Login() {
       } else {
         await loginWithEmail(email, password);
       }
-      navigate('/'); // Redirigir a la home tras éxito
+      navigate('/');
     } catch (err: any) {
       console.error(err);
-      // Mensajes de error amigables para la UI
       if (err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
         setError('Credenciales inválidas. Revisá tu email y contraseña.');
       } else if (err.code === 'auth/email-already-in-use') {

@@ -2,7 +2,6 @@ import { collection, getDocs, addDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import { Product } from '../types';
 
-// Referencia a la colección 'products' en Firestore
 const productsCollection = collection(db, 'products');
 
 export const getProducts = async (): Promise<Product[]> => {
@@ -18,7 +17,6 @@ export const getProducts = async (): Promise<Product[]> => {
   }
 };
 
-//  Coleman la función para crear un producto nuevo 🚀
 export const addProduct = async (product: Omit<Product, 'id'>): Promise<boolean> => {
   try {
     await addDoc(productsCollection, product);

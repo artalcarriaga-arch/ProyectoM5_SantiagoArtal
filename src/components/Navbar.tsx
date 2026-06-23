@@ -63,7 +63,6 @@ export default function Navbar() {
                 </button>
               </>
             ) : (
-              // Si no está logueado, botón de ingreso
               <Link
                 to="/login"
                 className="text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded-lg transition-all shadow-sm shadow-indigo-100"

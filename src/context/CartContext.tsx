@@ -1,16 +1,14 @@
 import React, { createContext, useReducer } from 'react';
 import { CartItem, Product } from '../types';
 
-// 1. Definimos el estado del carrito
 interface CartState {
   items: CartItem[];
   total: number;
 }
 
-// 2. Definimos las acciones posibles que alteran el carrito
 type CartAction =
   | { type: 'ADD_TO_CART'; payload: Product }
-  | { type: 'REMOVE_FROM_CART'; payload: string } // Recibe el productId
+  | { type: 'REMOVE_FROM_CART'; payload: string }
   | { type: 'UPDATE_QUANTITY'; payload: { productId: string; quantity: number } }
   | { type: 'CLEAR_CART' };
 
@@ -19,12 +17,10 @@ const initialState: CartState = {
   total: 0,
 };
 
-// Función auxiliar para calcular el total acumulado
 const calculateTotal = (items: CartItem[]): number => {
   return items.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
 };
 
-// 3. El Reducer: la función pura que maneja la lógica de estado
 const cartReducer = (state: CartState, action: CartAction): CartState => {
   switch (action.type) {
     case 'ADD_TO_CART': {
@@ -32,13 +28,11 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
       let updatedItems = [...state.items];
 
       if (existingIndex > -1) {
-        // Si ya existe el producto, incrementamos su cantidad
         updatedItems[existingIndex] = {
           ...updatedItems[existingIndex],
           quantity: updatedItems[existingIndex].quantity + 1,
         };
       } else {
-        // Si es nuevo, lo agregamos al arreglo
         updatedItems.push({ product: action.payload, quantity: 1 });
       }
 
@@ -57,7 +51,7 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
             ? { ...item, quantity: action.payload.quantity }
             : item
         )
-        .filter(item => item.quantity > 0); // Si la cantidad baja a 0, se remueve automáticamente
+        .filter(item => item.quantity > 0);
 
       return { items: updatedItems, total: calculateTotal(updatedItems) };
     }
@@ -70,7 +64,6 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
   }
 };
 
-// 4. Crear el Contexto
 interface CartContextType extends CartState {
   addToCart: (product: Product) => void;
   removeFromCart: (productId: string) => void;
@@ -80,11 +73,9 @@ interface CartContextType extends CartState {
 
 export const CartContext = createContext<CartContextType | undefined>(undefined);
 
-// 5. Componente Proveedor (Provider)
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [state, dispatch] = useReducer(cartReducer, initialState);
 
-  // Funciones despachadoras de acciones (helpers para los componentes)
   const addToCart = (product: Product) => dispatch({ type: 'ADD_TO_CART', payload: product });
   const removeFromCart = (productId: string) => dispatch({ type: 'REMOVE_FROM_CART', payload: productId });
   const updateQuantity = (productId: string, quantity: number) => dispatch({ type: 'UPDATE_QUANTITY', payload: { productId, quantity } });

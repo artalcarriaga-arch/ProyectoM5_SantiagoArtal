@@ -17,7 +17,6 @@ export default function Dashboard() {
     setLoading(true);
     setMessage({ text: '', isError: false });
 
-    // Armamos el objeto con el formato correcto
     const newProduct = {
       name,
       description,
@@ -31,7 +30,6 @@ export default function Dashboard() {
 
     if (success) {
       setMessage({ text: '¡Producto creado y subido a Firestore con éxito! 🎉', isError: false });
-      // Limpiamos el formulario
       setName('');
       setDescription('');
       setPrice('');

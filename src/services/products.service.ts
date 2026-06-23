@@ -14,7 +14,6 @@ export interface Product {
 export const getProductsFromDB = async (category?: string): Promise<Product[]> => {
   const productsRef = collection(db, 'products');
   
-  // Si nos pasan categoría, armamos una Query con filtro de Firestore, sino traemos todo
   const q = category && category !== 'Todos'
     ? query(productsRef, where('category', '==', category))
     : productsRef;

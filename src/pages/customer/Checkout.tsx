@@ -22,8 +22,6 @@ export default function Checkout() {
 
     setLoading(true);
     try {
-      // CartItem tiene estructura { product: Product; quantity: number }
-      // Necesitamos extraer los datos del product correctamente
       const orderItems = items.map((item) => ({
         id: item.product.id,
         name: item.product.name,
@@ -32,7 +30,6 @@ export default function Checkout() {
         imageUrl: item.product.imageUrl,
       }));
 
-      // Guardamos en Firestore
       const newId = await createOrderInDB(user.uid, user.email || 'anonimo@shop.com', orderItems, total);
       setOrderId(newId);
       clearCart();

@@ -34,7 +34,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Función para obtener o crear el perfil del usuario en Firestore (gestión de roles)
   const syncUserProfile = async (firebaseUser: User) => {
     const userDocRef = doc(db, 'users', firebaseUser.uid);
     const userDoc = await getDoc(userDocRef);
@@ -42,18 +41,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (userDoc.exists()) {
       setProfile(userDoc.data() as UserProfile);
     } else {
-      // Si el usuario es nuevo (ej: primer ingreso con Google), lo registramos como 'customer'
       const newProfile: UserProfile = {
         uid: firebaseUser.uid,
         email: firebaseUser.email,
-        role: 'customer' // 👈 Por defecto todos entran como clientes
+        role: 'customer'
       };
       await setDoc(userDocRef, newProfile);
       setProfile(newProfile);
     }
   };
 
-  // Acciones de autenticación
   const loginWithEmail = async (email: string, pass: string) => {
     await signInWithEmailAndPassword(auth, email, pass);
   };
@@ -69,7 +66,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = () => signOut(auth);
 
-  // Escuchador en tiempo real de la sesión de Firebase
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setLoading(true);

@@ -8,16 +8,13 @@ const CATEGORIES = ['Todos', 'Remeras', 'Pantalones', 'Zapatillas', 'Accesorios'
 export default function Home() {
   const { addToCart } = useCart();
   
-  // Estados de datos y UI
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState('Todos');
   
-  // Estados de búsqueda
   const [searchTerm, setSearchTerm] = useState('');
-  const debouncedSearchTerm = useDebounce(searchTerm, 400); // 👈 Espera 400ms tras dejar de escribir
+  const debouncedSearchTerm = useDebounce(searchTerm, 400);
 
-  // Efecto 1: Cargar productos desde Firestore cuando cambia la categoría
   useEffect(() => {
     const loadProducts = async () => {
       setLoading(true);
@@ -33,7 +30,6 @@ export default function Home() {
     loadProducts();
   }, [selectedCategory]);
 
-  // Filtrado por nombre local usando el valor optimizado por el Debounce
   const filteredProducts = products.filter(product =>
     product.name.toLowerCase().includes(debouncedSearchTerm.toLowerCase())
   );
@@ -41,7 +37,6 @@ export default function Home() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
       
-      {/* Hero Banner Minimalista */}
       <div className="bg-gradient-to-r from-indigo-600 to-violet-700 rounded-3xl p-8 sm:p-12 text-white shadow-xl shadow-indigo-100">
         <h1 className="text-3xl sm:text-5xl font-black tracking-tight mb-2">Descubrí las últimas Tendencias</h1>
         <p className="text-indigo-100 text-sm sm:text-base max-w-md font-medium">
@@ -49,10 +44,8 @@ export default function Home() {
         </p>
       </div>
 
-      {/* Controles: Buscador + Filtros (Diseño Mobile-First adaptativo) */}
       <div className="space-y-4 md:flex md:items-center md:justify-between md:space-y-0 bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
         
-        {/* Input de Búsqueda */}
         <div className="relative md:w-80">
           <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400 text-sm">🔍</span>
           <input
@@ -64,7 +57,6 @@ export default function Home() {
           />
         </div>
 
-        {/* Listado Horizontal Desplazable de Categorías (Clave para Mobile) */}
         <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-none snap-x">
           {CATEGORIES.map((cat) => (
             <button
@@ -82,9 +74,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Grilla de Contenido principal */}
       {loading ? (
-        // Skeletons de Carga Animados (Requerimiento de UI)
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {[...Array(4)].map((_, i) => (
             <div key={i} className="bg-white p-4 rounded-2xl border border-gray-100 space-y-3 animate-pulse">
@@ -95,7 +85,6 @@ export default function Home() {
           ))}
         </div>
       ) : filteredProducts.length === 0 ? (
-        // Estado Vacío Estilado
         <div className="text-center py-16 bg-white rounded-2xl border border-gray-100 max-w-md mx-auto">
           <span className="text-4xl">🔎</span>
           <h3 className="mt-4 text-sm font-bold text-gray-900">No encontramos productos</h3>
@@ -104,7 +93,6 @@ export default function Home() {
           </p>
         </div>
       ) : (
-        // Grilla de Productos Reales
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {filteredProducts.map((product) => (
             <div 
