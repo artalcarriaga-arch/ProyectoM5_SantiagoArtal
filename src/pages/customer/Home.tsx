@@ -1,126 +1,146 @@
-import { useState, useEffect } from 'react';
-import { useCart } from '../../context/CartContext';
-import { Product } from '../../types';
-import { getProducts } from '../../services/db';
+import { useEffect, useState } from 'react';
+import { getProductsFromDB, Product } from '../../services/products.service.ts';
+import { useDebounce } from '../../hooks/useDebounce.ts';
+import { useCart } from '../../context/CartContext.tsx';
+
+const CATEGORIES = ['Todos', 'Remeras', 'Pantalones', 'Zapatillas', 'Accesorios'];
 
 export default function Home() {
   const { addToCart } = useCart();
+  
+  // Estados de datos y UI
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState('Todos');
+  
+  // Estados de búsqueda
+  const [searchTerm, setSearchTerm] = useState('');
+  const debouncedSearchTerm = useDebounce(searchTerm, 400); // 👈 Espera 400ms tras dejar de escribir
 
-  // Al montar el componente, pedimos los productos a Firestore
+  // Efecto 1: Cargar productos desde Firestore cuando cambia la categoría
   useEffect(() => {
-    const fetchProducts = async () => {
+    const loadProducts = async () => {
       setLoading(true);
-      const data = await getProducts();
-      setProducts(data);
-      setLoading(false);
+      try {
+        const data = await getProductsFromDB(selectedCategory);
+        setProducts(data);
+      } catch (error) {
+        console.error("Error cargando productos:", error);
+      } finally {
+        setLoading(false);
+      }
     };
+    loadProducts();
+  }, [selectedCategory]);
 
-    fetchProducts();
-  }, []);
+  // Filtrado por nombre local usando el valor optimizado por el Debounce
+  const filteredProducts = products.filter(product =>
+    product.name.toLowerCase().includes(debouncedSearchTerm.toLowerCase())
+  );
 
   return (
-    <div className="bg-gray-50 min-h-screen py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+      
+      {/* Hero Banner Minimalista */}
+      <div className="bg-gradient-to-r from-indigo-600 to-violet-700 rounded-3xl p-8 sm:p-12 text-white shadow-xl shadow-indigo-100">
+        <h1 className="text-3xl sm:text-5xl font-black tracking-tight mb-2">Descubrí las últimas Tendencias</h1>
+        <p className="text-indigo-100 text-sm sm:text-base max-w-md font-medium">
+          Productos seleccionados con la mejor calidad y envío rápido a todo el país.
+        </p>
+      </div>
+
+      {/* Controles: Buscador + Filtros (Diseño Mobile-First adaptativo) */}
+      <div className="space-y-4 md:flex md:items-center md:justify-between md:space-y-0 bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
         
-        {/* Encabezado / Banner */}
-        <div className="text-center my-8">
-          <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl">
-            Descubrí las últimas <span className="text-indigo-600">Tendencias</span>
-          </h1>
-          <p className="mt-4 max-w-xl mx-auto text-base text-gray-500">
-            Productos seleccionados con la mejor calidad y envío rápido a todo el país.
-          </p>
+        {/* Input de Búsqueda */}
+        <div className="relative md:w-80">
+          <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400 text-sm">🔍</span>
+          <input
+            type="text"
+            placeholder="Buscar producto..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm transition-all"
+          />
         </div>
 
-        {/* Grilla de Productos o Estado de Carga */}
-        {loading ? (
-          // Skeletons: Animación de carga para que no quede en blanco
-          <div className="mt-12 grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-            {[1, 2, 3, 4].map((n) => (
-              <div key={n} className="bg-white border border-gray-100 rounded-2xl flex flex-col overflow-hidden shadow-sm animate-pulse">
-                <div className="h-48 bg-gray-200"></div>
-                <div className="p-4 flex-1 flex flex-col justify-between">
-                  <div className="space-y-2">
-                    <div className="h-3 bg-gray-200 rounded w-1/4"></div>
-                    <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-                    <div className="h-8 bg-gray-200 rounded w-full mt-2"></div>
-                  </div>
-                  <div className="mt-4 pt-4 border-t border-gray-100 flex justify-between">
-                    <div className="h-6 bg-gray-200 rounded w-1/3"></div>
-                    <div className="h-8 bg-gray-200 rounded w-1/4"></div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : products.length === 0 ? (
-          // Estado Vacío: Si Firestore no tiene productos o hubo un error
-          <div className="mt-12 text-center py-16 bg-white rounded-2xl border border-gray-100 border-dashed">
-            <span className="text-4xl">📭</span>
-            <h3 className="mt-4 text-lg font-medium text-gray-900">No hay productos disponibles</h3>
-            <p className="mt-1 text-sm text-gray-500">Volvé más tarde para ver nuestras novedades.</p>
-          </div>
-        ) : (
-          // Grilla de Productos Reales
-          <div className="mt-12 grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-            {products.map((product) => (
-              <div 
-                key={product.id} 
-                className="group relative bg-white border border-gray-200 rounded-2xl flex flex-col overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200"
-              >
-                <div className="aspect-w-4 aspect-h-3 bg-gray-200 h-48 overflow-hidden group-hover:opacity-95 transition-opacity">
+        {/* Listado Horizontal Desplazable de Categorías (Clave para Mobile) */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-none snap-x">
+          {CATEGORIES.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setSelectedCategory(cat)}
+              className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap snap-center ${
+                selectedCategory === cat
+                  ? 'bg-indigo-600 text-white shadow-md shadow-indigo-100'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Grilla de Contenido principal */}
+      {loading ? (
+        // Skeletons de Carga Animados (Requerimiento de UI)
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="bg-white p-4 rounded-2xl border border-gray-100 space-y-3 animate-pulse">
+              <div className="bg-gray-200 h-48 w-full rounded-xl" />
+              <div className="h-4 bg-gray-200 rounded w-2/3" />
+              <div className="h-4 bg-gray-200 rounded w-1/3" />
+            </div>
+          ))}
+        </div>
+      ) : filteredProducts.length === 0 ? (
+        // Estado Vacío Estilado
+        <div className="text-center py-16 bg-white rounded-2xl border border-gray-100 max-w-md mx-auto">
+          <span className="text-4xl">🔎</span>
+          <h3 className="mt-4 text-sm font-bold text-gray-900">No encontramos productos</h3>
+          <p className="mt-1 text-xs text-gray-500 px-4">
+            Probá cambiando la categoría o revisando si el nombre está bien escrito.
+          </p>
+        </div>
+      ) : (
+        // Grilla de Productos Reales
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {filteredProducts.map((product) => (
+            <div 
+              key={product.id} 
+              className="bg-white group rounded-2xl border border-gray-100 p-4 shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
+            >
+              <div>
+                <div className="relative overflow-hidden rounded-xl bg-gray-100 aspect-square mb-4">
                   <img
                     src={product.imageUrl}
                     alt={product.name}
-                    className="w-full h-full object-center object-cover"
-                    onError={(e) => { // Fallback si la imagen de Firebase se rompe
-                      (e.target as HTMLImageElement).src = 'https://via.placeholder.com/500x500?text=Sin+Imagen';
-                    }}
+                    className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
                   />
+                  <span className="absolute top-2 left-2 bg-white/90 backdrop-blur-sm px-2 py-0.5 rounded-md text-[10px] font-black text-indigo-600 tracking-wider uppercase">
+                    {product.category}
+                  </span>
                 </div>
-
-                <div className="flex-1 p-4 flex flex-col justify-between">
-                  <div className="space-y-1">
-                    <span className="text-xs font-semibold text-indigo-600 tracking-wide uppercase">
-                      {product.category}
-                    </span>
-                    <h3 className="text-sm font-bold text-gray-900 line-clamp-1">
-                      {product.name}
-                    </h3>
-                    <p className="text-xs text-gray-500 line-clamp-2">
-                      {product.description}
-                    </p>
-                  </div>
-
-                  <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
-                    <span className="text-lg font-extrabold text-gray-900">
-                      ${product.price.toLocaleString('es-AR')}
-                    </span>
-                    
-                    <button
-                      onClick={() => addToCart(product)}
-                      disabled={product.stock <= 0}
-                      className={`flex items-center justify-center px-3 py-2 rounded-xl text-xs font-semibold transition-colors gap-1.5 shadow-sm 
-                        ${product.stock > 0 
-                          ? 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-indigo-100' 
-                          : 'bg-gray-100 text-gray-400 cursor-not-allowed'}`}
-                    >
-                      {product.stock > 0 ? (
-                        <><span>🛒</span> Agregar</>
-                      ) : (
-                        'Sin Stock'
-                      )}
-                    </button>
-                  </div>
-                </div>
+                <h3 className="text-sm font-bold text-gray-900 line-clamp-1">{product.name}</h3>
+                <p className="text-xs text-gray-500 mt-1 line-clamp-2 min-h-[2rem]">{product.description}</p>
               </div>
-            ))}
-          </div>
-        )}
-
-      </div>
+              
+              <div className="mt-4 flex items-center justify-between pt-2 border-t border-gray-50">
+                <span className="text-base font-black text-gray-900">
+                  ${product.price.toLocaleString('es-AR')}
+                </span>
+                <button
+                  onClick={() => addToCart(product)}
+                  className="bg-indigo-50 hover:bg-indigo-600 text-indigo-600 hover:text-white font-bold text-xs py-2 px-3 rounded-xl transition-all flex items-center gap-1.5"
+                >
+                  <span>+</span> Agregar
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
