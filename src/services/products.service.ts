@@ -1,4 +1,4 @@
-import { collection, getDocs, query, where, addDoc } from 'firebase/firestore';
+import { collection, getDocs, query, where, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
 import { db } from '../config/firebase';
 
 export interface Product {
@@ -45,6 +45,28 @@ export const addProduct = async (product: Omit<Product, 'id'>): Promise<boolean>
     return true;
   } catch (error) {
     console.error("Error al crear el producto en Firestore:", error);
+    return false;
+  }
+};
+
+export const updateProduct = async (id: string, updates: Partial<Omit<Product, 'id'>>): Promise<boolean> => {
+  try {
+    const productDoc = doc(db, 'products', id);
+    await updateDoc(productDoc, updates);
+    return true;
+  } catch (error) {
+    console.error("Error al actualizar el producto:", error);
+    return false;
+  }
+};
+
+export const deleteProduct = async (id: string): Promise<boolean> => {
+  try {
+    const productDoc = doc(db, 'products', id);
+    await deleteDoc(productDoc);
+    return true;
+  } catch (error) {
+    console.error("Error al eliminar el producto:", error);
     return false;
   }
 };
