@@ -108,7 +108,6 @@ export default function Login() {
           </button>
         </form>
 
-        {/* Separador Visual */}
         <div className="relative my-6">
           <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-200"></div></div>
           <div className="relative flex justify-center text-xs uppercase"><span className="bg-white px-2 text-gray-400 font-semibold">O continuá con</span></div>
@@ -124,7 +123,6 @@ export default function Login() {
           Ingresar con Google
         </button>
 
-        {/* Alternar entre Login y Registro */}
         <div className="text-center mt-6">
           <button
             onClick={() => {

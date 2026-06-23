@@ -1,14 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, act, waitFor } from '@testing-library/react';
-import { useAuth } from '../../src/hooks/useAuth';
-import { AuthProvider } from '../../src/context/AuthContext';
+import { useAuth } from '../src/hooks/useAuth';
+import { AuthProvider } from '../src/context/AuthContext';
 import React from 'react';
 import * as firebaseAuth from 'firebase/auth';
 import * as firebaseFirestore from 'firebase/firestore';
 
 vi.mock('firebase/auth');
 vi.mock('firebase/firestore');
-vi.mock('../../src/config/firebase', () => ({
+vi.mock('../src/config/firebase', () => ({
   auth: {},
   db: {},
 }));

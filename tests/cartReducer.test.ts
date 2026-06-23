@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { cartReducer, initialState } from '../../src/context/CartContext';
-import { Product } from '../../src/types';
+import { cartReducer, initialState } from '../src/context/CartContext';
+import { Product } from '../src/types';
 
 const mockProduct: Product = {
   id: '1',

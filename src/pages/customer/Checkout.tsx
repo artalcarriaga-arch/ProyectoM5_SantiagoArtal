@@ -94,7 +94,6 @@ export default function Checkout() {
             ))}
           </div>
 
-          {/* Caja del Total */}
           <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm h-fit space-y-4">
             <h3 className="text-sm font-black text-gray-900 uppercase tracking-wider">Total de la Orden</h3>
             <div className="flex justify-between items-center pt-2 border-t border-gray-100">
