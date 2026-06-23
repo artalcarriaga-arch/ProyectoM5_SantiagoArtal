@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../config/firebase';
+import { useAuth } from '../../context/AuthContext';
 
 export default function Login() {
+  const { loginWithEmail, registerWithEmail, loginWithGoogle } = useAuth();
+  const navigate = useNavigate();
+
+  // Estados del formulario
+  const [isRegister, setIsRegister] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -16,101 +19,126 @@ export default function Login() {
     setLoading(true);
 
     try {
-      // 1. Intentamos autenticar con Firebase Auth
-      await signInWithEmailAndPassword(auth, email, password);
-      
-      // 2. Si sale bien, AuthContext va a detectar el cambio de usuario de forma automática.
-      // Redirigimos al inicio; nuestro ProtectedRoute se encargará de evaluar los roles.
-      navigate('/');
-    } catch (err: any) {
-      console.error("Error en el login:", err);
-      // Manejo de errores amigable para el usuario
-      if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
-        setError('Email o contraseña incorrectos. Verificá tus datos.');
+      if (isRegister) {
+        await registerWithEmail(email, password);
       } else {
-        setError('Hubo un problema al iniciar sesión. Intentá de nuevo más tarde.');
+        await loginWithEmail(email, password);
+      }
+      navigate('/'); // Redirigir a la home tras éxito
+    } catch (err: any) {
+      console.error(err);
+      // Mensajes de error amigables para la UI
+      if (err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
+        setError('Credenciales inválidas. Revisá tu email y contraseña.');
+      } else if (err.code === 'auth/email-already-in-use') {
+        setError('El email ya está registrado por otra cuenta.');
+      } else if (err.code === 'auth/weak-password') {
+        setError('La contraseña debe tener al menos 6 caracteres.');
+      } else {
+        setError('Ocurrió un error inesperado. Intentalo de nuevo.');
       }
     } finally {
       setLoading(false);
     }
   };
 
+  const handleGoogleLogin = async () => {
+    setError('');
+    try {
+      await loginWithGoogle();
+      navigate('/');
+    } catch (err) {
+      setError('Error al autenticar con Google.');
+    }
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
-      <div className="w-full max-w-md space-y-8 bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 tracking-tight">
-            Ingresá a tu cuenta
+    <div className="min-h-[85vh] flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-gray-50">
+      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+        
+        {/* Encabezado */}
+        <div className="text-center">
+          <span className="text-4xl">🛍️</span>
+          <h2 className="mt-4 text-3xl font-black text-gray-900">
+            {isRegister ? 'Creá tu cuenta' : 'Ingresá a tu cuenta'}
           </h2>
-          <p className="mt-2 text-center text-sm text-gray-500">
-            Gestioná tus compras o administra el stock del catálogo
+          <p className="mt-2 text-sm text-gray-500">
+            {isRegister ? 'Disfrutá de la mejor experiencia e-commerce' : '¡Qué bueno verte de nuevo!'}
           </p>
         </div>
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          {error && (
-            <div className="p-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg text-center font-medium animate-pulse">
-              {error}
-            </div>
-          )}
+        {/* Alerta de Error */}
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-600 text-sm p-3 rounded-xl font-medium text-center">
+            ⚠️ {error}
+          </div>
+        )}
 
-          <div className="rounded-md space-y-4">
+        {/* Formulario */}
+        <form className="mt-8 space-y-4" onSubmit={handleSubmit}>
+          <div className="space-y-3">
             <div>
-              <label htmlFor="email-address" className="block text-sm font-medium text-gray-700 mb-1">
-                Correo Electrónico
-              </label>
+              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Email</label>
               <input
-                id="email-address"
-                name="email"
                 type="email"
-                autoComplete="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="appearance-none relative block w-full px-3 py-2.5 border border-gray-300 placeholder-gray-400 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
-                placeholder="ejemplo@correo.com"
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
+                placeholder="correo@ejemplo.com"
               />
             </div>
-
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                Contraseña
-              </label>
+              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Contraseña</label>
               <input
-                id="password"
-                name="password"
                 type="password"
-                autoComplete="current-password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="appearance-none relative block w-full px-3 py-2.5 border border-gray-300 placeholder-gray-400 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
                 placeholder="••••••••"
               />
             </div>
           </div>
 
-          <div>
-            <button
-              type="submit"
-              disabled={loading}
-              className={`group relative w-full flex justify-center py-2.5 px-4 border border-transparent text-sm font-medium rounded-lg text-white transition-colors duration-200 ${
-                loading
-                  ? 'bg-indigo-400 cursor-not-allowed'
-                  : 'bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
-              }`}
-            >
-              {loading ? (
-                <div className="flex items-center space-x-2">
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  <span>Verificando...</span>
-                </div>
-              ) : (
-                'Iniciar Sesión'
-              )}
-            </button>
-          </div>
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold rounded-xl transition-colors shadow-sm mt-2"
+          >
+            {loading ? 'Procesando...' : isRegister ? 'Registrarme' : 'Iniciar Sesión'}
+          </button>
         </form>
+
+        {/* Separador Visual */}
+        <div className="relative my-6">
+          <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-200"></div></div>
+          <div className="relative flex justify-center text-xs uppercase"><span className="bg-white px-2 text-gray-400 font-semibold">O continuá con</span></div>
+        </div>
+
+        {/* Botón de Google */}
+        <button
+          onClick={handleGoogleLogin}
+          type="button"
+          className="w-full py-2.5 px-4 border border-gray-300 hover:bg-gray-50 text-gray-700 text-sm font-semibold rounded-xl transition-colors flex items-center justify-center gap-2 shadow-sm"
+        >
+          <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" className="w-5 h-5" />
+          Ingresar con Google
+        </button>
+
+        {/* Alternar entre Login y Registro */}
+        <div className="text-center mt-6">
+          <button
+            onClick={() => {
+              setIsRegister(!isRegister);
+              setError('');
+            }}
+            className="text-xs font-bold text-indigo-600 hover:text-indigo-700 underline transition-colors"
+          >
+            {isRegister ? '¿Ya tenés una cuenta? Iniciá sesión' : '¿No tenés cuenta? Registrate acá'}
+          </button>
+        </div>
+
       </div>
     </div>
   );
