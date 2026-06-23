@@ -64,6 +64,8 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
   }
 };
 
+export { cartReducer, initialState, calculateTotal };
+
 interface CartContextType extends CartState {
   addToCart: (product: Product) => void;
   removeFromCart: (productId: string) => void;
