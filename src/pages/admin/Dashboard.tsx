@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { addProduct, getProducts, updateProduct, deleteProduct, Product } from '../../services/products.service';
+import { getPresignedUploadUrl, uploadFileToS3, isValidImageFile, generateUniqueFileName } from '../../services/s3.service';
 import { ADMIN_CATEGORIES } from '../../constants';
 
 export default function Dashboard() {
@@ -11,6 +12,8 @@ export default function Dashboard() {
   const [stock, setStock] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [category, setCategory] = useState('Remeras');
+  const [imagePreview, setImagePreview] = useState('');
+  const [uploading, setUploading] = useState(false);
   
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ text: '', isError: false });
@@ -30,9 +33,62 @@ export default function Dashboard() {
     setPrice('');
     setStock('');
     setImageUrl('');
+    setImagePreview('');
     setCategory('Remeras');
     setEditingId(null);
     setMessage({ text: '', isError: false });
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validar archivo
+    if (!isValidImageFile(file)) {
+      setMessage({ 
+        text: '❌ Archivo inválido. Máximo 5MB (JPEG, PNG, WebP o GIF)', 
+        isError: true 
+      });
+      return;
+    }
+
+    try {
+      setUploading(true);
+      setMessage({ text: '', isError: false });
+
+      // Mostrar preview local
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setImagePreview(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+
+      // Obtener URL presignada
+      const fileName = generateUniqueFileName(file.name);
+      const { uploadUrl, imageUrl: s3ImageUrl } = await getPresignedUploadUrl(
+        fileName,
+        file.type
+      );
+
+      // Subir archivo directamente a S3
+      await uploadFileToS3(uploadUrl, file);
+
+      // Guardar URL en el estado
+      setImageUrl(s3ImageUrl);
+      setMessage({ 
+        text: '✅ Imagen subida a S3 exitosamente', 
+        isError: false 
+      });
+    } catch (error) {
+      console.error('Error al subir imagen:', error);
+      setMessage({ 
+        text: '❌ Error al subir imagen a S3', 
+        isError: true 
+      });
+      setImagePreview('');
+    } finally {
+      setUploading(false);
+    }
   };
 
   const handleEdit = (product: Product) => {
@@ -42,6 +98,7 @@ export default function Dashboard() {
     setPrice(product.price.toString());
     setStock(product.stock.toString());
     setImageUrl(product.imageUrl);
+    setImagePreview(product.imageUrl);
     setCategory(product.category);
   };
 
@@ -63,12 +120,19 @@ export default function Dashboard() {
     setLoading(true);
     setMessage({ text: '', isError: false });
 
+    // Validar que hay imagen
+    if (!imageUrl) {
+      setMessage({ text: '❌ Debes cargar una imagen', isError: true });
+      setLoading(false);
+      return;
+    }
+
     const productData = {
       name,
       description,
       price: Number(price),
       stock: Number(stock),
-      imageUrl: imageUrl || 'https://via.placeholder.com/500x500?text=Producto',
+      imageUrl: imageUrl,
       category
     };
 
@@ -194,14 +258,43 @@ export default function Dashboard() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1">URL de la Imagen</label>
-              <input
-                type="url"
-                value={imageUrl}
-                onChange={(e) => setImageUrl(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
-                placeholder="https://images.unsplash.com/... o enlace de internet"
-              />
+              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1">📸 Imagen del Producto</label>
+              <div className="flex gap-4">
+                {/* Preview */}
+                <div className="w-24 h-24 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 flex items-center justify-center bg-gray-50 dark:bg-gray-700 overflow-hidden">
+                  {imagePreview ? (
+                    <img 
+                      src={imagePreview} 
+                      alt="Preview" 
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <span className="text-2xl">📁</span>
+                  )}
+                </div>
+
+                {/* File Input */}
+                <div className="flex-1">
+                  <div className="relative">
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp,image/gif"
+                      onChange={handleImageUpload}
+                      disabled={uploading}
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm cursor-pointer"
+                    />
+                    {uploading && (
+                      <div className="absolute inset-0 bg-indigo-600/10 dark:bg-indigo-900/30 rounded-xl flex items-center justify-center">
+                        <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400">Subiendo...</span>
+                      </div>
+                    )}
+                  </div>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">JPG, PNG, WebP o GIF • Máximo 5MB</p>
+                  {imageUrl && (
+                    <p className="text-xs text-emerald-600 dark:text-emerald-400 mt-1">✅ Imagen cargada en S3</p>
+                  )}
+                </div>
+              </div>
             </div>
 
             <div className="pt-4">

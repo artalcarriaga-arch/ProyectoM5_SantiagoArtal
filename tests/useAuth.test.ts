@@ -1,10 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { renderHook, act, waitFor } from '@testing-library/react';
+import { renderHook, waitFor } from '@testing-library/react';
 import { useAuth } from '../src/hooks/useAuth';
 import { AuthProvider } from '../src/context/AuthContext';
 import React from 'react';
 import * as firebaseAuth from 'firebase/auth';
-import * as firebaseFirestore from 'firebase/firestore';
 
 vi.mock('firebase/auth');
 vi.mock('firebase/firestore');
@@ -20,7 +19,7 @@ describe('useAuth', () => {
   });
 
   it('debe inicializar sin usuario', async () => {
-    (firebaseAuth.onAuthStateChanged as any).mockImplementation((auth, callback) => {
+    (firebaseAuth.onAuthStateChanged as any).mockImplementation((_: any, callback: any) => {
       callback(null);
       return vi.fn();
     });
@@ -42,7 +41,7 @@ describe('useAuth', () => {
   });
 
   it('debe retornar funciones de autenticación', async () => {
-    (firebaseAuth.onAuthStateChanged as any).mockImplementation((auth, callback) => {
+    (firebaseAuth.onAuthStateChanged as any).mockImplementation((_: any, callback: any) => {
       callback(null);
       return vi.fn();
     });
