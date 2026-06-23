@@ -2,8 +2,7 @@ import { useEffect, useState } from 'react';
 import { getProductsFromDB, Product } from '../../services/products.service.ts';
 import { useDebounce } from '../../hooks/useDebounce.ts';
 import { useCart } from '../../hooks/useCart';
-
-const CATEGORIES = ['Todos', 'Remeras', 'Pantalones', 'Zapatillas', 'Accesorios'];
+import { PRODUCT_CATEGORIES } from '../../constants';
 
 export default function Home() {
   const { addToCart } = useCart();
@@ -58,7 +57,7 @@ export default function Home() {
         </div>
 
         <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-none snap-x">
-          {CATEGORIES.map((cat) => (
+          {PRODUCT_CATEGORIES.map((cat) => (
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}

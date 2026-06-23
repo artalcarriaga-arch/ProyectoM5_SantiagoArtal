@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { addProduct } from '../../services/products.service';
+import { ADMIN_CATEGORIES } from '../../constants';
 
 export default function Dashboard() {
   const [name, setName] = useState('');
@@ -7,7 +8,7 @@ export default function Dashboard() {
   const [price, setPrice] = useState('');
   const [stock, setStock] = useState('');
   const [imageUrl, setImageUrl] = useState('');
-  const [category, setCategory] = useState('Indumentaria');
+  const [category, setCategory] = useState('Remeras');
   
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ text: '', isError: false });
@@ -79,9 +80,9 @@ export default function Dashboard() {
                 onChange={(e) => setCategory(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm bg-white"
               >
-                <option value="Indumentaria">Indumentaria</option>
-                <option value="Calzado">Calzado</option>
-                <option value="Accesorios">Accesorios</option>
+                {ADMIN_CATEGORIES.map((cat) => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
               </select>
             </div>
           </div>

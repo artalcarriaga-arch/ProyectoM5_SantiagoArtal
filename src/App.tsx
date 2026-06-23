@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Home from './pages/customer/Home';
+import Checkout from './pages/customer/Checkout';
 import Login from './pages/auth/Login';
 import Dashboard from './pages/admin/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -11,16 +12,17 @@ function App() {
     <Router>
       <Navbar/>
       <Routes>
-        {/* Rutas Públicas */}
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Home />} />
 
-        {/* Ruta de Admin (Temporalmente desprotegida para probar) */}
+        <Route element={<ProtectedRoute allowedRoles={['customer', 'admin']} />}>
+          <Route path="/checkout" element={<Checkout />} />
+        </Route>
+
         <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
           <Route path="/admin" element={<Dashboard />} />
         </Route>
 
-        {/* Redirección por si meten cualquier otra URL */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>

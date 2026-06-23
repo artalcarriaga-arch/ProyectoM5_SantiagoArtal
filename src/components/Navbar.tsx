@@ -2,9 +2,11 @@ import { Link, useNavigate } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
 import { auth } from '../config/firebase';
 import { useAuth } from '../context/AuthContext';
+import { useCart } from '../hooks/useCart';
 
 export default function Navbar() {
   const { user, profile } = useAuth();
+  const { items } = useCart();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -44,7 +46,18 @@ export default function Navbar() {
                   )}
                 </div>
 
-                {/* Acceso rápido al dashboard si es admin */}
+                <Link
+                  to="/checkout"
+                  className="relative text-sm font-semibold text-indigo-600 hover:text-indigo-700 px-3 py-2 rounded-lg hover:bg-indigo-50 transition-colors"
+                >
+                  🛒 Carrito
+                  {items.length > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-black rounded-full h-5 w-5 flex items-center justify-center">
+                      {items.length}
+                    </span>
+                  )}
+                </Link>
+
                 {profile?.role === 'admin' && (
                   <Link
                     to="/admin"
@@ -54,7 +67,6 @@ export default function Navbar() {
                   </Link>
                 )}
 
-                {/* Botón de cerrar sesión */}
                 <button
                   onClick={handleLogout}
                   className="text-sm font-medium text-gray-600 hover:text-red-600 px-3 py-2 rounded-lg hover:bg-red-50 transition-colors"
