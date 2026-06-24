@@ -3,8 +3,7 @@ import {
   User, 
   signInWithEmailAndPassword, 
   createUserWithEmailAndPassword, 
-  signInWithRedirect, 
-  getRedirectResult,
+  signInWithPopup, 
   GoogleAuthProvider, 
   signOut, 
   onAuthStateChanged 
@@ -65,16 +64,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const loginWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
-    await signInWithRedirect(auth, provider);
+    await signInWithPopup(auth, provider);
   };
 
   const logout = () => signOut(auth);
 
   useEffect(() => {
-    getRedirectResult(auth).catch((error) => {
-      console.error('Redirect result error:', error);
-    });
-
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setLoading(true);
       if (currentUser) {

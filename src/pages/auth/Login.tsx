@@ -26,14 +26,20 @@ export default function Login() {
       navigate('/');
     } catch (err: any) {
       console.error(err);
-      if (err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
-        setError('Credenciales inválidas. Revisá tu email y contraseña.');
+      if (err.code === 'auth/user-not-found') {
+        setError('Este email no está registrado. ¿Querés crear una cuenta?');
+      } else if (err.code === 'auth/wrong-password') {
+        setError('Contraseña incorrecta. Verificá que esté bien escrita.');
       } else if (err.code === 'auth/email-already-in-use') {
-        setError('El email ya está registrado por otra cuenta.');
+        setError('Este email ya está registrado. Intentá iniciar sesión.');
       } else if (err.code === 'auth/weak-password') {
         setError('La contraseña debe tener al menos 6 caracteres.');
+      } else if (err.code === 'auth/invalid-email') {
+        setError('El email no es válido. Verificá el formato.');
+      } else if (err.code === 'auth/too-many-requests') {
+        setError('Demasiados intentos. Esperá unos minutos antes de reintentar.');
       } else {
-        setError('Ocurrió un error inesperado. Intentalo de nuevo.');
+        setError(`Error: ${err.message || 'Algo salió mal. Intentá de nuevo.'}`);
       }
     } finally {
       setLoading(false);
@@ -44,14 +50,13 @@ export default function Login() {
     setError('');
     try {
       await loginWithGoogle();
+      navigate('/');
     } catch (err: any) {
       console.error('Google login error:', err);
       if (err.code === 'auth/popup-blocked') {
         setError('El popup fue bloqueado. Permitilo en tu navegador.');
       } else if (err.code === 'auth/popup-closed-by-user') {
-        setError('Cerraste la ventana de Google. Intenta de nuevo.');
-      } else if (err.code === 'auth/cancelled-popup-request') {
-        setError('Se canceló la solicitud. Intenta de nuevo.');
+        setError('Cerraste la ventana de Google.');
       } else {
         setError('Error al autenticar con Google. Intenta de nuevo.');
       }
