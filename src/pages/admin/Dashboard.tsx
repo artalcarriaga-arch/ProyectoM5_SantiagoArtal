@@ -11,6 +11,7 @@ export default function Dashboard() {
   const [price, setPrice] = useState('');
   const [stock, setStock] = useState('');
   const [imageUrl, setImageUrl] = useState('');
+  const [imageFileKey, setImageFileKey] = useState('');
   const [category, setCategory] = useState('Remeras');
   const [imagePreview, setImagePreview] = useState('');
   const [uploading, setUploading] = useState(false);
@@ -33,6 +34,7 @@ export default function Dashboard() {
     setPrice('');
     setStock('');
     setImageUrl('');
+    setImageFileKey('');
     setImagePreview('');
     setCategory('Remeras');
     setEditingId(null);
@@ -62,7 +64,7 @@ export default function Dashboard() {
       reader.readAsDataURL(file);
 
       const fileName = generateUniqueFileName(file.name);
-      const { uploadUrl, imageUrl: s3ImageUrl } = await getPresignedUploadUrl(
+      const { uploadUrl, imageUrl: s3ImageUrl, fileKey } = await getPresignedUploadUrl(
         fileName,
         file.type
       );
@@ -70,6 +72,7 @@ export default function Dashboard() {
       await uploadFileToS3(uploadUrl, file);
 
       setImageUrl(s3ImageUrl);
+      setImageFileKey(fileKey);
       setMessage({ 
         text: '✅ Imagen subida a S3 exitosamente', 
         isError: false 
@@ -93,6 +96,7 @@ export default function Dashboard() {
     setPrice(product.price.toString());
     setStock(product.stock.toString());
     setImageUrl(product.imageUrl);
+    setImageFileKey(product.imageFileKey || '');
     setImagePreview(product.imageUrl);
     setCategory(product.category);
   };
@@ -127,6 +131,7 @@ export default function Dashboard() {
       price: Number(price),
       stock: Number(stock),
       imageUrl: imageUrl,
+      imageFileKey: imageFileKey,
       category
     };
 

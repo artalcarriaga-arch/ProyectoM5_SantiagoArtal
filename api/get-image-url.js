@@ -1,4 +1,4 @@
-const { S3Client, PutObjectCommand, GetObjectCommand } = require('@aws-sdk/client-s3');
+const { S3Client, GetObjectCommand } = require('@aws-sdk/client-s3');
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 
 const s3Client = new S3Client({
@@ -15,30 +15,15 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    const { fileName, contentType } = req.body;
+    const { fileKey } = req.body;
 
-    if (!fileName || !contentType) {
-      return res.status(400).json({ error: 'fileName y contentType son requeridos' });
+    if (!fileKey) {
+      return res.status(400).json({ error: 'fileKey es requerido' });
     }
 
     if (!process.env.AWS_S3_BUCKET_NAME) {
       return res.status(500).json({ error: 'AWS_S3_BUCKET_NAME no configurado' });
     }
-
-    const timestamp = Date.now();
-    const random = Math.random().toString(36).substring(2, 9);
-    const extension = fileName.split('.').pop() || 'jpg';
-    const fileKey = `products/${timestamp}-${random}.${extension}`;
-
-    const putObjectCommand = new PutObjectCommand({
-      Bucket: process.env.AWS_S3_BUCKET_NAME,
-      Key: fileKey,
-      ContentType: contentType,
-    });
-
-    const uploadUrl = await getSignedUrl(s3Client, putObjectCommand, {
-      expiresIn: 15 * 60,
-    });
 
     const getObjectCommand = new GetObjectCommand({
       Bucket: process.env.AWS_S3_BUCKET_NAME,
@@ -49,16 +34,12 @@ module.exports = async function handler(req, res) {
       expiresIn: 7 * 24 * 60 * 60,
     });
 
-    return res.status(200).json({
-      uploadUrl,
-      fileKey,
-      imageUrl,
-    });
+    return res.status(200).json({ imageUrl });
   } catch (error) {
-    console.error('Error al generar URL presignada:', error);
+    console.error('Error al generar URL presignada para GET:', error);
     return res.status(500).json({
       error: 'Error al generar URL presignada',
       details: error instanceof Error ? error.message : 'Error desconocido',
     });
   }
-}
+};

@@ -69,3 +69,25 @@ export function generateUniqueFileName(originalName: string): string {
   const extension = originalName.split('.').pop() || 'jpg';
   return `products/${timestamp}-${random}.${extension}`;
 }
+
+export async function getImageUrl(fileKey: string): Promise<string> {
+  try {
+    const response = await fetch('/api/get-image-url', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ fileKey }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Error al obtener URL de imagen');
+    }
+
+    const { imageUrl } = await response.json();
+    return imageUrl;
+  } catch (error) {
+    console.error('Error en getImageUrl:', error);
+    throw error;
+  }
+}
