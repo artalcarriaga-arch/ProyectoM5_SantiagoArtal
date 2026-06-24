@@ -16,9 +16,12 @@ module.exports = async function handler(req, res) {
   try {
     const { to, subject, htmlBody } = req.body;
 
+    console.log('Recibido:', { to, subject, htmlBodyLength: htmlBody?.length });
+
     if (!to || !subject || !htmlBody) {
       return res.status(400).json({
         error: 'to, subject y htmlBody son requeridos',
+        received: { to: !!to, subject: !!subject, htmlBody: !!htmlBody },
       });
     }
 
