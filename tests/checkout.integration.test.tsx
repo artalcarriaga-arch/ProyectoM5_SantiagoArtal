@@ -1,6 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
-import { renderHook } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
+import { renderHook, act } from '@testing-library/react';
 import React from 'react';
 import { CartProvider } from '../src/context/CartContext';
 import { useCart } from '../src/hooks/useCart';
