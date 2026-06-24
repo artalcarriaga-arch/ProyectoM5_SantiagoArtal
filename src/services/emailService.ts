@@ -175,8 +175,6 @@ async function sendEmail(payload: EmailPayload): Promise<void> {
     if (!response.ok) {
       throw new Error('Error al enviar email');
     }
-
-    console.log('Email enviado exitosamente a:', payload.to);
   } catch (error) {
     console.error('Error en sendEmail:', error);
   }
