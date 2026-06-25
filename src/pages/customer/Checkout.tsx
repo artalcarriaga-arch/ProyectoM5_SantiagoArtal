@@ -5,7 +5,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { createOrderInDB } from '../../services/orderService';
 
 export default function Checkout() {
-  const { items, total, clearCart } = useCart();
+  const { items, total, clearCart, removeFromCart, updateQuantity } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
   
@@ -86,17 +86,44 @@ export default function Checkout() {
                 <img 
                   src={item.product.imageUrl} 
                   alt={item.product.name} 
-                  className="w-16 h-16 object-cover rounded-lg bg-gray-50 dark:bg-gray-700" 
+                  className="w-16 h-16 object-cover rounded-lg bg-gray-50 dark:bg-gray-700 shrink-0" 
                 />
                 <div className="flex-1 min-w-0">
                   <h4 className="text-sm font-bold text-gray-900 dark:text-white truncate">{item.product.name}</h4>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">Cant: {item.quantity} x ${item.product.price}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">${item.product.price.toLocaleString('es-AR')} c/u</p>
+                  <div className="flex items-center gap-2 mt-2">
+                    <button
+                      onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
+                      className="w-7 h-7 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-bold text-sm flex items-center justify-center transition-colors"
+                    >
+                      −
+                    </button>
+                    <span className="text-sm font-bold text-gray-900 dark:text-white w-6 text-center">{item.quantity}</span>
+                    <button
+                      onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
+                      className="w-7 h-7 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-bold text-sm flex items-center justify-center transition-colors"
+                    >
+                      +
+                    </button>
+                    <button
+                      onClick={() => removeFromCart(item.product.id)}
+                      className="ml-2 text-xs text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 font-semibold transition-colors"
+                    >
+                      Eliminar
+                    </button>
+                  </div>
                 </div>
-                <span className="text-sm font-black text-gray-900 dark:text-white">
+                <span className="text-sm font-black text-gray-900 dark:text-white shrink-0">
                   ${(item.product.price * item.quantity).toLocaleString('es-AR')}
                 </span>
               </div>
             ))}
+            <button
+              onClick={clearCart}
+              className="text-xs text-gray-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400 font-semibold transition-colors mt-1"
+            >
+              🗑 Vaciar carrito
+            </button>
           </div>
 
           <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm h-fit space-y-4">
