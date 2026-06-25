@@ -30,6 +30,8 @@ export default function Login() {
         setError('Este email no está registrado. ¿Querés crear una cuenta?');
       } else if (err.code === 'auth/wrong-password') {
         setError('Contraseña incorrecta. Verificá que esté bien escrita.');
+      } else if (err.code === 'auth/invalid-credential') {
+        setError('Email o contraseña incorrectos. Verificá tus datos.');
       } else if (err.code === 'auth/email-already-in-use') {
         setError('Este email ya está registrado. Intentá iniciar sesión.');
       } else if (err.code === 'auth/weak-password') {
